@@ -3,7 +3,7 @@
 let assert = require('chai').assert;
 let request = require('supertest-as-promised');
 
-let app = require('../../app');
+let app = require('../../app.js');
 let _user = 'integration_test_' + Math.floor(Date.now() / 1000) + '@alttab.co';
 
 describe('Authentication Controller', () => {
@@ -25,7 +25,7 @@ describe('Authentication Controller', () => {
       });
   });
 
-  it('should login existing User', () => {
+  it('should login existing user', () => {
     let _token = null;
     return request(app)
       .post('/api/login')
@@ -73,7 +73,6 @@ describe('Authentication Controller', () => {
 });
 
 describe('Profile controller', () => {
-
   let _token = null;
 
   before(() => {
@@ -104,4 +103,16 @@ describe('Profile controller', () => {
       .get('/api/profile')
       .expect(401);
   });
+
+  // created new integration test, logout user
+  it('should logout existing user logged in', () => {
+    return request(app)
+      .get('/api/logout')
+      .set('Authorization', 'Bearer ' + _token)
+      .expect(200)
+      .then((data) => {
+        assert.equal(data.body.logout, true);
+      });
+  });
+
 });
